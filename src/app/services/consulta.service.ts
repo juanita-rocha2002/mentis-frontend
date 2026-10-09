@@ -8,7 +8,8 @@ import { Consulta, HistoriaClinicaPaciente } from '../models/consulta.model';
 })
 export class ConsultaService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/consultas';
+  // private apiUrl = 'http://localhost:8080/api/v1/consultas';
+  private apiUrl = 'https://mentis-backend-wfeq.onrender.com/api/v1/consultas';
 
   constructor(private http: HttpClient) {}
 
