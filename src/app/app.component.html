@@ -1,0 +1,382 @@
+<div class="clinical-container">
+  
+  <!-- NAVEGACIÓN ENTRE TABS -->
+  <div class="tabs">
+    <button 
+      class="tab-btn" 
+      [class.active]="tabActiva === 'registro'" 
+      (click)="tabActiva = 'registro'">
+      ✍️ Registrar Atención Inicial
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="tabActiva === 'buscador'" 
+      (click)="tabActiva = 'buscador'">
+      🔍 Buscador & Historia Clínica
+    </button>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 1: FORMULARIO DE REGISTRO COMPLETO (INFORMACIÓN CLÍNICA EXTENDIDA) -->
+  <!-- =================================================================== -->
+  <div *ngIf="tabActiva === 'registro'">
+    <div class="header-banner">
+      <h1>HISTORIA CLÍNICA PSICOLÓGICA</h1>
+      <p style="margin:0; font-size: 13px; color: var(--text-muted);">
+        Registro Clínico Integral — Normativa Vigente (Res. 1995 de 1999 / Ley 1090 de 2006 / Ley 1581 de 2012)
+      </p>
+    </div>
+
+    <form (ngSubmit)="guardar()">
+      
+      <!-- DATOS DEL PROFESIONAL -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Profesional Responsable *</label>
+          <input type="text" [(ngModel)]="consulta.profesionalNombre" name="profesionalNombre" required placeholder="Nombre y Apellidos del profesional">
+        </div>
+        <div class="form-group">
+          <label>Registro Profesional *</label>
+          <input type="text" [(ngModel)]="consulta.profesionalRegistro" name="profesionalRegistro" required placeholder="Ej: TP 123456-P">
+        </div>
+      </div>
+
+      <!-- 1. DATOS DE IDENTIFICACIÓN DEL USUARIO -->
+      <div class="section-title">1. Datos de Identificación del Usuario</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" [(ngModel)]="consulta.usuarioNombre" name="usuarioNombre" required placeholder="Nombre completo del paciente">
+        </div>
+        <div class="form-group">
+          <label>Tipo Documento *</label>
+          <select [(ngModel)]="consulta.usuarioDocumentoTipo" name="usuarioDocumentoTipo">
+            <option value="CC">Cédula de Ciudadanía (CC)</option>
+            <option value="TI">Tarjeta de Identidad (TI)</option>
+            <option value="CE">Cédula de Extranjería (CE)</option>
+            <option value="PAS">Pasaporte (PAS)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Número Documento *</label>
+          <input type="text" [(ngModel)]="consulta.usuarioDocumentoNumero" name="usuarioDocumentoNumero" required placeholder="Sin puntos ni guiones">
+        </div>
+        <div class="form-group">
+          <label>Fecha de Nacimiento</label>
+          <input type="date" [(ngModel)]="consulta.datosFormulario['fechaNacimiento']" name="fechaNacimiento">
+        </div>
+        <div class="form-group">
+          <label>Edad</label>
+          <input type="number" [(ngModel)]="consulta.datosFormulario['edad']" name="edad" placeholder="Años">
+        </div>
+        <div class="form-group">
+          <label>Sexo (si es clínicamente pertinente)</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['sexo']" name="sexo">
+        </div>
+        <div class="form-group">
+          <label>Escolaridad *</label>
+          <select [(ngModel)]="consulta.datosFormulario.escolaridad" name="escolaridad">
+            <option value="">-- Seleccionar --</option>
+            <option value="Sin Escolaridad">Sin Escolaridad</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria / Bachillerato">Secundaria / Bachillerato</option>
+            <option value="Técnico / Tecnológico">Técnico / Tecnológico</option>
+            <option value="Universitario">Universitario</option>
+            <option value="Posgrado">Posgrado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ciudad / País Residencia</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['residencia']" name="residencia">
+        </div>
+        <div class="form-group">
+          <label>Teléfono Contacto</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['telefono']" name="telefono">
+        </div>
+        <div class="form-group full-width">
+          <label>Correo Electrónico</label>
+          <input type="email" [(ngModel)]="consulta.datosFormulario['email']" name="email" placeholder="ejemplo@correo.com">
+        </div>
+        <div class="form-group">
+          <label>Ocupación / Actividad</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['ocupacion']" name="ocupacion">
+        </div>
+        <div class="form-group">
+          <label>Entidad Responsable del Pago (si aplica)</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['entidadPago']" name="entidadPago">
+        </div>
+      </div>
+
+      <!-- 2. DATOS DE LA ATENCIÓN -->
+      <div class="section-title">2. Datos de la Atención</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Fecha Atención *</label>
+          <input type="date" [(ngModel)]="consulta.fechaAtencion" name="fechaAtencion" required>
+        </div>
+        <div class="form-group">
+          <label>Hora Inicio *</label>
+          <input type="time" [(ngModel)]="consulta.horaInicio" name="horaInicio" required>
+        </div>
+        <div class="form-group">
+          <label>Hora Finalización *</label>
+          <input type="time" [(ngModel)]="consulta.horaFin" name="horaFin" required>
+        </div>
+        <div class="form-group">
+          <label>Plataforma Utilizada</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['plataforma']" name="plataforma" placeholder="Ej: Zoom, Meet">
+        </div>
+        <div class="form-group full-width">
+          <label>Ubicación del Usuario durante la Sesión</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario['ubicacionUsuario']" name="ubicacionUsuario" placeholder="Ciudad / País actual">
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top: 10px;">
+        <div class="form-group">
+          <label>Verificación de Identidad:</label>
+          <select [(ngModel)]="consulta.datosFormulario['verificacionIdentidad']" name="verificacionIdentidad">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Privacidad del Entorno Confirmada:</label>
+          <select [(ngModel)]="consulta.datosFormulario['privacidadEntorno']" name="privacidadEntorno">
+            <option [ngValue]="true">Sí</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 3 & 4. MOTIVO DE CONSULTA E HISTORIA DEL PROBLEMA -->
+      <div class="section-title">3. Motivo de Consulta & 4. Historia del Problema Actual</div>
+      <div class="form-group full-width">
+        <label>Motivo Expresado por el Usuario:</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario['motivoConsulta']" name="motivoConsulta" placeholder="Textual expresado por el usuario..."></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Enfermedad o Problema Actual:</label>
+        <textarea rows="3" [(ngModel)]="consulta.datosFormulario.enfermedadProblemaActual" name="enfermedadProblemaActual" placeholder="Descripción amplia y evolución del problema actual..."></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Historia Personal (Infancia, desarrollo y acontecimientos significativos):</label>
+        <textarea rows="3" [(ngModel)]="consulta.datosFormulario.historiaPersonal" name="historiaPersonal"></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Historia Familiar (Relaciones, dinámica familiar y antecedentes):</label>
+        <textarea rows="3" [(ngModel)]="consulta.datosFormulario.historiaFamiliar" name="historiaFamiliar"></textarea>
+      </div>
+
+      <!-- 5. ANTECEDENTES Y CONSUMO -->
+      <div class="section-title">5. Antecedentes Relevantes & Hábitos</div>
+      <div class="form-group full-width">
+        <label>Antecedentes de Salud Mental (Tratamientos psicológicos o psiquiátricos previos):</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.antecedentesSaludMental" name="antecedentesSaludMental"></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Antecedentes Médicos y Farmacológicos (Condiciones médicas y medicamentos reportados):</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.antecedentesMedicosFarmaco" name="antecedentesMedicosFarmaco"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Consumo de Sustancias:</label>
+          <select [(ngModel)]="consulta.datosFormulario.consumoSustancias" name="consumoSustancias">
+            <option value="No reporta">No reporta</option>
+            <option value="Ocasional">Ocasional</option>
+            <option value="Frecuente / Problemático">Frecuente / Problemático</option>
+            <option value="En remisión">En remisión</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 6. ÁREAS DE FUNCIONAMIENTO -->
+      <div class="section-title">6. Contexto & Áreas de Funcionamiento</div>
+      <div class="form-group full-width">
+        <label>Área Social, Académica y Laboral (Funcionamiento cotidiano y redes de apoyo):</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.areaSocialAcademicaLaboral" name="areaSocialAcademicaLaboral"></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Área Afectiva y de Pareja (Relaciones significativas y dificultades actuales):</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.areaAfectivaPareja" name="areaAfectivaPareja"></textarea>
+      </div>
+
+      <!-- 7. EXAMEN MENTAL -->
+      <div class="section-title">7. Examen / Observación del Estado Mental</div>
+      <div class="form-group full-width">
+        <textarea rows="4" [(ngModel)]="consulta.datosFormulario['examenMental']" name="examenMental" placeholder="Porte, actitud, afecto, pensamiento, sensorio, orientación, juicio, etc."></textarea>
+      </div>
+
+      <!-- 8 & 9. EVALUACIÓN DE RIESGO Y DIAGNÓSTICO -->
+      <div class="section-title">8. Evaluación de Riesgo & 9. Diagnóstico</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nivel de Riesgo Evaluado:</label>
+          <select [(ngModel)]="consulta.datosFormulario.evaluacionRiesgoNivel" name="evaluacionRiesgoNivel">
+            <option value="Sin riesgo apreciable">Sin riesgo apreciable</option>
+            <option value="Bajo">Bajo</option>
+            <option value="Moderado">Moderado</option>
+            <option value="Alto">Alto</option>
+            <option value="Inminente">Inminente</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group full-width">
+        <label>Evaluación del Riesgo (Ideación suicida, autolesiones, violencia u otros) y Medidas Adoptadas:</label>
+        <textarea rows="3" [(ngModel)]="consulta.datosFormulario.medidasAdoptadas" name="medidasAdoptadas" placeholder="Documente los hallazgos y las medidas adoptadas / plan de seguridad..."></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Diagnóstico Diferencial (si procede):</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.diagnosticoDiferencial" name="diagnosticoDiferencial"></textarea>
+      </div>
+
+      <!-- 12. PLAN Y REMISIONES -->
+      <div class="section-title">12. Objetivos Terapéuticos & Plan de Intervención</div>
+      <div class="form-group full-width">
+        <label>Objetivos Terapéuticos:</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.objetivosTerapeuticos" name="objetivosTerapeuticos"></textarea>
+      </div>
+      <div class="form-group full-width">
+        <label>Enfoque y Plan de Intervención:</label>
+        <textarea rows="2" [(ngModel)]="consulta.datosFormulario.enfoquePlanIntervencion" name="enfoquePlanIntervencion"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Remisiones o Interconsultas:</label>
+          <select [(ngModel)]="consulta.datosFormulario.requiereRemision" name="requiereRemision">
+            <option value="No">No requiere</option>
+            <option value="Sí - Psiquiatría">Sí - Psiquiatría</option>
+            <option value="Sí - Medicina General">Sí - Medicina General</option>
+            <option value="Sí - Trabajo Social">Sí - Trabajo Social</option>
+            <option value="Sí - Otra Especialidad">Sí - Otra Especialidad</option>
+          </select>
+        </div>
+        <div class="form-group full-width" *ngIf="consulta.datosFormulario.requiereRemision && consulta.datosFormulario.requiereRemision !== 'No'">
+          <label>Motivo y Detalle de la Remisión:</label>
+          <input type="text" [(ngModel)]="consulta.datosFormulario.detalleRemision" name="detalleRemision" placeholder="¿A quién y por qué motivo?">
+        </div>
+      </div>
+
+      <!-- 13. PRIMERA NOTA DE MANEJO / EVOLUCIÓN -->
+      <div class="section-title">13. Evolución / Nota de Atención Inicial</div>
+      <div class="form-group full-width">
+        <label>Nota de Manejo Clínica (Entrada Inicial) *</label>
+        <textarea rows="4" [(ngModel)]="primeraNotaManejo" name="primeraNotaManejo" required placeholder="Redacte la nota clínica correspondiente a esta sesión inicial..."></textarea>
+      </div>
+
+      <div style="margin-top: 30px; text-align: right;">
+        <button type="submit" class="btn-primary">💾 Registrar Historia Clínica Inicial</button>
+      </div>
+    </form>
+  </div>
+
+
+  <!-- =================================================================== -->
+  <!-- TAB 2: BUSCADOR & HISTORIA CLÍNICA (EVOLUCIONES HISTÓRICAS) -->
+  <!-- =================================================================== -->
+  <div *ngIf="tabActiva === 'buscador'">
+    <div class="header-banner">
+      <h1>HISTORIA CLÍNICA & BÚSQUEDA DE PACIENTE</h1>
+      <p style="margin:0; font-size: 13px; color: var(--text-muted);">
+        Consulta de Atenciones Registradas y Adición de Nuevas Notas de Evolución
+      </p>
+    </div>
+
+    <!-- BARRA DE BÚSQUEDA EN TIEMPO REAL -->
+    <div class="search-box">
+      <label><strong>🔍 Buscar Paciente:</strong></label>
+      <input 
+        type="text" 
+        [(ngModel)]="terminoBusqueda" 
+        placeholder="Ingrese nombre o número de documento del paciente..." 
+        (input)="buscarCoincidencias()">
+
+      <ul *ngIf="sugerencias.length > 0" class="suggestions">
+        <li *ngFor="let s of sugerencias" (click)="seleccionarPaciente(s)">
+          👤 <strong>{{ s.usuarioNombre }}</strong> — {{ s.usuarioDocumentoTipo }}: {{ s.usuarioDocumentoNumero }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- VISTA CONSOLIDADA DE HISTORIA CLÍNICA DEL PACIENTE -->
+    <div *ngIf="historia" class="history-content">
+      
+      <div class="patient-header-card" style="background: var(--bg-subtle); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="margin: 0 0 5px 0; color: var(--primary);">👤 Paciente: {{ historia.usuarioNombre }}</h2>
+        <p style="margin: 0; font-size: 14px;">
+          <strong>Documento:</strong> {{ historia.usuarioDocumentoTipo }} - {{ historia.usuarioDocumentoNumero }} | 
+          <strong>Total de Sesiones:</strong> {{ historia.totalAtenciones }}
+        </p>
+      </div>
+
+      <!-- LÍNEA DE TIEMPO DE CADA ATENCIÓN -->
+      <div *ngFor="let atencion of historia.atenciones" class="timeline-item">
+        <div class="timeline-header">
+          <h3>📅 Cita / Sesión del {{ atencion.fechaAtencion }} ({{ atencion.horaInicio }} - {{ atencion.horaFin }})</h3>
+          <span class="profesional-badge">Atendido por: {{ atencion.profesionalNombre }} (Reg: {{ atencion.profesionalRegistro }})</span>
+        </div>
+
+        <p *ngIf="atencion.datosFormulario['motivoConsulta']">
+          <strong>Motivo:</strong> {{ atencion.datosFormulario['motivoConsulta'] }}
+        </p>
+        
+        <p *ngIf="atencion.datosFormulario.enfermedadProblemaActual">
+          <strong>Problema Actual:</strong> {{ atencion.datosFormulario.enfermedadProblemaActual }}
+        </p>
+
+        <p *ngIf="atencion.datosFormulario.evaluacionRiesgoNivel">
+          <strong>Nivel de Riesgo:</strong> {{ atencion.datosFormulario.evaluacionRiesgoNivel }}
+        </p>
+
+        <!-- SUB-SECCIÓN: HISTORIAL DE NOTAS DE MANEJO / EVOLUCIONES INMUTABLES -->
+        <div class="section-title" style="margin-top: 15px;">
+          📋 Historial de Notas de Manejo / Evoluciones
+        </div>
+        
+        <div *ngIf="atencion.evoluciones && atencion.evoluciones.length > 0; else sinNotas">
+          <div *ngFor="let evo of atencion.evoluciones" class="nota-historica-card" style="background: #FFF; border: 1px solid var(--border-color); padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+            <div class="nota-header" style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">
+              <span>⏰ Sello de Fecha/Hora: {{ evo.fechaRegistro | date:'dd/MM/yyyy hh:mm a' }}</span>
+              <span>Responsable: {{ evo.profesionalNombre }}</span>
+            </div>
+            <p class="nota-contenido" style="margin: 0; font-size: 14px; white-space: pre-wrap;">{{ evo.contenido }}</p>
+          </div>
+        </div>
+
+        <ng-template #sinNotas>
+          <p style="font-style: italic; font-size: 13px; color: var(--text-muted);">No hay notas registradas para esta sesión.</p>
+        </ng-template>
+
+        <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EVOLUCIÓN CON FECHA ACTUAL -->
+        <div class="nueva-nota-box" style="background: var(--bg-subtle); padding: 15px; border-radius: 8px; margin-top: 15px;">
+          <label><strong>➕ Registrar Nueva Nota de Manejo / Evolución:</strong></label>
+          <p style="margin: 0 0 8px 0; font-size: 12px; color: var(--text-muted);">
+            Esta nota se guardará inmutablemente adjunta a esta sesión con la fecha y hora actual del sistema.
+          </p>
+          
+          <textarea 
+            rows="3" 
+            [(ngModel)]="textoNuevaNotaMap[atencion.id!]" 
+            placeholder="Redacte aquí la evolución o seguimiento clínico posterior..."></textarea>
+          
+          <div style="text-align: right; margin-top: 8px;">
+            <button 
+              class="btn-primary" 
+              style="font-size: 13px; background-color: #5C6B57;" 
+              (click)="agregarEvolucion(atencion.id!)">
+              💾 Guardar Nueva Nota de Manejo
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AVISO REGULATORIO Y LEGAL -->
+  <div class="legal-notice" style="margin-top: 40px; background: var(--bg-subtle); border-left: 4px solid var(--primary); padding: 12px; font-size: 12px; color: var(--text-muted);">
+    <strong>NOTA DE MANEJO DOCUMENTAL:</strong> La historia clínica es un documento privado, obligatorio y sometido a reserva. Para el manejo, custodia y conservación deben observarse las normas vigentes aplicables a la prestación de servicios de salud y registros clínicos.
+  </div>
+
+</div>
