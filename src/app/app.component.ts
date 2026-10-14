@@ -26,6 +26,7 @@ export class AppComponent {
 
   // Campo temporal para la primera nota de manejo al crear el registro inicial
   primeraNotaManejo: string = '';
+  guardando: boolean = false;
 
   // Objeto modelo para el formulario de registro inicial
   consulta: Consulta = {
@@ -52,10 +53,14 @@ export class AppComponent {
   // REGISTRO DE ATENCIÓN INICIAL
   // ==========================================
   guardar(): void {
+    if (this.guardando) return; 
+
     if (!this.primeraNotaManejo.trim()) {
       alert('Debe ingresar la Nota de Manejo Inicial para guardar la atención.');
       return;
     }
+
+    this.guardando = true;
 
     this.consulta.evoluciones = [
       {
@@ -68,9 +73,11 @@ export class AppComponent {
     this.consultaService.guardarConsulta(this.consulta).subscribe({
       next: (res) => {
         alert(`Atención registrada con éxito. Registro clínico ID: ${res.id}`);
+        this.guardando = false;
         this.resetFormulario();
       },
       error: (err) => {
+        this.guardando = false;
         console.error('Error al guardar la consulta:', err);
         // Muestra el mensaje de error de documento duplicado devuelto por el Backend
         const mensaje = err.error?.message || 'Ocurrió un error al guardar la consulta clínica.';

@@ -265,7 +265,16 @@
       </div>
 
       <div style="margin-top: 30px; text-align: right;">
-        <button type="submit" class="btn-primary">💾 Registrar Historia Clínica Inicial</button>
+        <button 
+          type="submit" 
+          class="btn-primary"
+          [disabled]="guardando"
+          [style.opacity]="guardando ? '0.6' : '1'"
+          [style.cursor]="guardando ? 'not-allowed' : 'pointer'">
+          
+          <span *ngIf="!guardando">💾 Registrar Historia Clínica Inicial</span>
+          <span *ngIf="guardando">⏳ Guardando, por favor espere...</span>
+        </button>
       </div>
     </form>
   </div>
