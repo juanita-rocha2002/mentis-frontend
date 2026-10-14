@@ -37,4 +37,9 @@ export class ConsultaService {
       notaManejo: contenidoNota
     });
   }
+
+  // 5. Eliminar un paciente completo por documento
+  eliminarPaciente(tipoDoc: string, numDoc: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/paciente?tipoDoc=${tipoDoc}&numDoc=${numDoc}`);
+  }
 }

@@ -57,28 +57,24 @@ export class AppComponent {
       return;
     }
 
-    // Normalizar las horas al formato HH:mm:ss antes de enviar a Spring Boot
-    const payloadConsulta: Consulta = {
-      ...this.consulta,
-      horaInicio: this.asegurarFormatoHora(this.consulta.horaInicio),
-      horaFin: this.asegurarFormatoHora(this.consulta.horaFin),
-      evoluciones: [
-        {
-          fechaRegistro: new Date().toISOString(),
-          profesionalNombre: this.consulta.profesionalNombre || 'Profesional Registrado',
-          contenido: this.primeraNotaManejo.trim()
-        }
-      ]
-    };
+    this.consulta.evoluciones = [
+      {
+        fechaRegistro: new Date().toISOString(),
+        profesionalNombre: this.consulta.profesionalNombre,
+        contenido: this.primeraNotaManejo
+      }
+    ];
 
-    this.consultaService.guardarConsulta(payloadConsulta).subscribe({
+    this.consultaService.guardarConsulta(this.consulta).subscribe({
       next: (res) => {
         alert(`Atención registrada con éxito. Registro clínico ID: ${res.id}`);
         this.resetFormulario();
       },
       error: (err) => {
         console.error('Error al guardar la consulta:', err);
-        alert('Ocurrió un error al guardar la consulta clínica. Revisa la consola del navegador.');
+        // Muestra el mensaje de error de documento duplicado devuelto por el Backend
+        const mensaje = err.error?.message || 'Ocurrió un error al guardar la consulta clínica.';
+        alert(`⚠️ ${mensaje}`);
       }
     });
   }
@@ -151,6 +147,32 @@ export class AppComponent {
     });
   }
 
+  // NUEVO MÉTODO PARA ELIMINAR PACIENTE
+  eliminarPacienteActual(): void {
+    if (!this.historia) return;
+
+    const confirmacion = confirm(
+      `🚨 ¿Está completamente seguro de eliminar la Historia Clínica de ${this.historia.usuarioNombre}?\n\nEsta acción borrará PERMANENTEMENTE todas las atenciones y notas registradas.`
+    );
+
+    if (confirmacion) {
+      this.consultaService.eliminarPaciente(
+        this.historia.usuarioDocumentoTipo, 
+        this.historia.usuarioDocumentoNumero
+      ).subscribe({
+        next: () => {
+          alert('Paciente e historia clínica eliminados correctamente.');
+          this.historia = undefined;
+          this.terminoBusqueda = '';
+        },
+        error: (err) => {
+          console.error('Error al eliminar paciente:', err);
+          alert('No se pudo eliminar el paciente.');
+        }
+      });
+    }
+  }
+
   // ==========================================
   // MÉTODOS AUXILIARES
   // ==========================================
@@ -160,27 +182,27 @@ export class AppComponent {
   }
 
   private resetFormulario(): void {
-  this.primeraNotaManejo = '';
-  this.consulta = {
-    profesionalNombre: this.consulta.profesionalNombre,
-    profesionalRegistro: this.consulta.profesionalRegistro,
-    usuarioNombre: '',
-    usuarioDocumentoTipo: 'CC',
-    usuarioDocumentoNumero: '',
-    fechaAtencion: new Date().toISOString().split('T')[0],
-    horaInicio: '08:00',
-    horaFin: '09:00',
-    evoluciones: [],
-    firmaProfesional: '',
-    datosFormulario: {
-      escolaridad: 'Universitario',
-      consumoSustancias: 'No reporta',
-      evaluacionRiesgoNivel: 'Sin riesgo apreciable',
-      requiereRemision: 'No',
-      plataforma: 'Zoom',
-      verificacionIdentidad: true,
-      privacidadEntorno: true
-    }
-  };
-}
+    this.primeraNotaManejo = '';
+    this.consulta = {
+      profesionalNombre: this.consulta.profesionalNombre,
+      profesionalRegistro: this.consulta.profesionalRegistro,
+      usuarioNombre: '',
+      usuarioDocumentoTipo: 'CC',
+      usuarioDocumentoNumero: '',
+      fechaAtencion: new Date().toISOString().split('T')[0],
+      horaInicio: '08:00',
+      horaFin: '09:00',
+      evoluciones: [],
+      firmaProfesional: '',
+      datosFormulario: {
+        escolaridad: 'Universitario',
+        consumoSustancias: 'No reporta',
+        evaluacionRiesgoNivel: 'Sin riesgo apreciable',
+        requiereRemision: 'No',
+        plataforma: 'Zoom',
+        verificacionIdentidad: true,
+        privacidadEntorno: true
+      }
+    };
+  }
 }

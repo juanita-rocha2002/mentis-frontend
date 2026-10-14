@@ -301,12 +301,21 @@
     <!-- VISTA CONSOLIDADA DE HISTORIA CLÍNICA DEL PACIENTE -->
     <div *ngIf="historia" class="history-content">
       
-      <div class="patient-header-card" style="background: var(--bg-subtle); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <h2 style="margin: 0 0 5px 0; color: var(--primary);">👤 Paciente: {{ historia.usuarioNombre }}</h2>
-        <p style="margin: 0; font-size: 14px;">
-          <strong>Documento:</strong> {{ historia.usuarioDocumentoTipo }} - {{ historia.usuarioDocumentoNumero }} | 
-          <strong>Total de Sesiones:</strong> {{ historia.totalAtenciones }}
-        </p>
+      <div class="patient-header-card" style="background: var(--bg-subtle); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2 style="margin: 0 0 5px 0; color: var(--primary);">👤 Paciente: {{ historia.usuarioNombre }}</h2>
+          <p style="margin: 0; font-size: 14px;">
+            <strong>Documento:</strong> {{ historia.usuarioDocumentoTipo }} - {{ historia.usuarioDocumentoNumero }} | 
+            <strong>Total de Sesiones:</strong> {{ historia.totalAtenciones }}
+          </p>
+        </div>
+
+        <!-- BOTÓN DE ELIMINACIÓN DE PACIENTE COMPLETO -->
+        <button 
+          (click)="eliminarPacienteActual()" 
+          style="background-color: #A94442; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
+          🗑️ Eliminar Paciente e Historia
+        </button>
       </div>
 
       <!-- LÍNEA DE TIEMPO DE CADA ATENCIÓN -->
